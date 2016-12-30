@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>RAU DAILY TRACKING SYSTEM</title>
+<script type="text/javascript" src="/knowledgeSharing/js/jquery.min.js"></script>
+<link href="/knowledgeSharing/css/jquery.dataTables.min.css" type="text/css" rel="stylesheet">
+<link href="/knowledgeSharing/css/jquery-ui.css" type="text/css" rel="stylesheet">
+<link href="/knowledgeSharing/css/jquery-ui.theme.css" type="text/css" rel="stylesheet">
+<link href="/knowledgeSharing/css/styles.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="/knowledgeSharing/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/knowledgeSharing/js/jquery-ui.js"></script>
+<script type="text/javascript" src="/knowledgeSharing/js/ks.js"></script>
+</head>
+<body>
+<div class="logo">RAU DAILY TRACKING SYSTEM</div>
+<div class="header">
+	<div onclick="getList();$('#labelName').val('issueTracking');">IssueTracking</div>
+	<div onclick="getDeliverList();$('#labelName').val('deliveryRecord');">DeliveryRecord</div>
+	<div onclick="exportToExcel();" class="exportButton">Export To Excel</div>
+</div>
+<div class="headerRight">
+	Welcome <div id="welcomeUser"></div>
+	<input type="hidden" id="userRole"/>
+	<input type="hidden" id="labelName" value="issueTracking"/>
+</div>
+<div id="localTimer"></div>
+<div id="mainContent">
+	<div id = "list">
+		<table id="myTable">
+			<thead>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div id="dialog" title="Basic dialog" style="display: none;">
+	<table>
+		<tr>
+			<td class="titleBold">IssueType</td>
+			<td id="issueTypeDialog"></td>
+		</tr>
+		<tr>
+			<td class="titleBold">Summary</td>
+			<td id="summaryDialog"></td>
+		</tr>
+		<tr>
+			<td valign="top" class="titleBold">Description logs</td>
+			<td id="descriptionLogsDialog"></td>
+		</tr>
+		<tr>
+			<td class="titleBold">Solution</td>
+			<td id="solutionDialog"></td>
+		</tr>
+		<tr>
+			<td class="titleBold">Fixed By</td>
+			<td id="fixedByDialog"></td>
+		</tr>
+		<tr>
+			<td class="titleBold">Add By</td>
+			<td id="addByDialog"></td>
+		</tr>
+	</table>
+</div>
+
+<div id="dialogDeliver" title="Basic dialog" style="display: none;">
+	<table style="width: 100%;">
+		<tr>
+			<td colspan="5" width="50%;">
+			  <label for="Developer" class="titleBold">Developer</label>
+			  <div id="developerDialog"></div>
+			</td>
+			<td colspan="5" width="50%;">
+			  <label for="Delivery Date" class="titleBold">Delivery Date</label>
+			  <div id="deliveryDateDialog"></div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+			  <label for="Task Summary" class="titleBold">Task Summary</label>
+			  <div id="taskSummaryDialog"></div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+			  <label for="Description" class="titleBold">Description</label>
+			  <div id="descriptionDialog"></div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			  <label for="App Changes" class="titleBold">App Changes</label>
+			  <div id="appChangesDialog"></div>
+			</td>
+			<td colspan="3">
+			  <label for="Web Changes" class="titleBold">Web Changes</label>
+			  <div id="webChangesDialog"></div>
+			</td>
+			<td colspan="3">
+			  <label for="Config Changes" class="titleBold">Config Changes</label>
+			  <div id="configChangesDialog"></div>
+			</td>
+			<td colspan="2">
+			  <label for="DB Changes" class="titleBold">DB Changes</label>
+			  <div id="dbChangesDialog"></div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="5">
+			  <label for="Status" class="titleBold">Status</label>
+			  <div id="statusDialog"></div>
+			</td>
+			<td colspan="5">
+			  <label for="region" class="titleBold">Region</label>
+			  <div id="regionDialog"></div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+			  <label for="UXF" class="titleBold">UXF</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="GCBUILDIQA" class="titleBold">GC BUILD IQA</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="GCUATIQA" class="titleBold">GC UAT IQA</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="SIT" class="titleBold">SIT</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="UAT" class="titleBold">UAT</label>
+			</td>
+		</tr>
+		<tr class="needBorder">
+			<td align="center">
+			  	<label for="UXF DP" class="titleBold">DP</label>
+			  	<div id="uxfdpDialog"></div>
+			</td>
+			<td align="center">
+			  	<label for="UXF VF" class="titleBold">VF</label>
+			  	<div id="uxfvfDialog"></div>
+			</td>
+			<td align="center">
+			  	<label for="GC BUILD IQA DP" class="titleBold">DP</label>
+			  	<div id="gcBuildIqadpDialog"></div>
+			</td>
+			<td align="center">
+			  	<label for="GC BUILD IQA VF" class="titleBold">VF</label>
+			  	<div id="gcBuildIqavfDialog"></div>
+			</td>
+			<td align="center">
+			  	<label for="GC UAT IQA DP" class="titleBold">DP</label>
+			  	<div id="gcUatIqadpDialog"></div>
+			</td>
+			<td align="center">
+			  	<label for="GC UAT IQA VF" class="titleBold">VF</label>
+			  	<div id="gcUatIqavfDialog"></div>
+			</td>
+			<td align="center">
+			  	<label for="SIT DP" class="titleBold">DP</label>
+			  	<div id="sitdpDialog"></div>
+			</td>
+			<td align="center">
+			  	<label for="SIT VF" class="titleBold">VF</label>
+			  	<div id="sitvfDialog"></div>
+			</td>
+			<td align="center">
+			  	<label for="UAT DP" class="titleBold">DP</label>
+			  	<div id="uatdpDialog"></div>
+			</td>
+			<td align="center">
+			  	<label for="UAT VF" class="titleBold">VF</label>
+			  	<div id="uatvfDialog"></div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+			  <label for="remark" class="titleBold">Remark</label>
+			  	<div id="remarkDialog"></div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div id="dialog-form" title="Create new issues" style="display: none;">
+  <form id="issue">
+    <fieldset>
+      <label for="issueType" class="titleBold">IssueType</label>
+      <input type="text" name="issues.issueType" id="issueType" value="" class="text ui-widget-content ui-corner-all">
+      <label for="summary" class="titleBold">Summary</label>
+      <input type="text" name="issues.summary" id="summary" value="" class="text ui-widget-content ui-corner-all">
+      <label for="descriptionLogs" class="titleBold">Description logs</label>
+      <textarea name="issues.descriptionLogs" id="descriptionLogs" class="text ui-widget-content ui-corner-all" style="width: 97%;height: 240px;"></textarea>
+      <label for="solution" class="titleBold">Solution</label>
+      <input type="text" name="issues.solution" id="solution" value="" class="text ui-widget-content ui-corner-all">
+      <label for="fixedBy" class="titleBold">Fixed By</label>
+      <input type="text" name="issues.fixedBy" id="fixedBy" value="" class="text ui-widget-content ui-corner-all">
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+<div id="dialog-form-upd" title="Update issues" style="display: none;">
+  <form id="issueUpd">
+  <input type="hidden" id="issueUpdId" name="issues.id">
+    <fieldset>
+      <label for="issueType" class="titleBold">IssueType</label>
+      <input type="text" name="issues.issueType" id="issueTypeUpd" value="" class="text ui-widget-content ui-corner-all">
+      <label for="summary" class="titleBold">Summary</label>
+      <input type="text" name="issues.summary" id="summaryUpd" value="" class="text ui-widget-content ui-corner-all">
+      <label for="descriptionLogs" class="titleBold">Description logs</label>
+      <textarea name="issues.descriptionLogs" id="descriptionLogsUpd" class="text ui-widget-content ui-corner-all" style="width: 97%;height: 240px;"></textarea>
+      <label for="solution" class="titleBold">Solution</label>
+      <input type="text" name="issues.solution" id="solutionUpd" value="" class="text ui-widget-content ui-corner-all">
+      <label for="fixedBy" class="titleBold">Fixed By</label>
+      <input type="text" name="issues.fixedBy" id="fixedByUpd" value="" class="text ui-widget-content ui-corner-all">
+      <input type="submit" tabindex="-1" style="position:absolute; top:-1000px">
+    </fieldset>
+  </form>
+</div>
+
+<div id="dialog-form-deliver" title="Create new delivery" style="display: none;">
+  <form id="deliver">
+	<table>
+		<tr>
+			<td colspan="5">
+			  <label for="Developer" class="titleBold">Developer</label>
+			  <input type="text" name="deliver.developer" id="developer" value="" class="text ui-widget-content ui-corner-all">
+			</td>
+			<td colspan="5">
+			  <label for="Delivery Date" class="titleBold">Delivery Date</label>
+			  <input type="text" name="deliver.deliveryDate" id="deliveryDate" class="text ui-widget-content ui-corner-all">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+			  <label for="Task Summary" class="titleBold">Task Summary</label>
+			  <input type="text" name="deliver.taskSummary" id="taskSummary" value="" class="text ui-widget-content ui-corner-all">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+			  <label for="Description" class="titleBold">Description(The reason of delivery)</label>
+			  <textarea name="deliver.description" id="description" class="text ui-widget-content ui-corner-all" style="width: 100%;height: 240px;"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			  <label for="App Changes" class="titleBold">App Changes</label>
+			  <div class="radio">
+			    <input type="radio" id="appChanges1" name="deliver.appChanges" checked="checked" value="N">N
+			    <input type="radio" id="appChanges2" name="deliver.appChanges" value="Y">Y
+			  </div>
+			</td>
+			<td colspan="3">
+			  <label for="Web Changes" class="titleBold">Web Changes</label>
+			  <div class="radio">
+			    <input type="radio" id="webChanges1" name="deliver.webChanges" checked="checked" value="N">N
+			    <input type="radio" id="webChanges2" name="deliver.webChanges" value="Y">Y
+			  </div>
+			</td>
+			<td colspan="3">
+			  <label for="Config Changes" class="titleBold">Config Changes</label>
+			  <div class="radio">
+			    <input type="radio" id="configChanges1" name="deliver.configChanges" checked="checked" value="N">N
+			    <input type="radio" id="configChanges2" name="deliver.configChanges" value="Y">Y
+			  </div>
+			</td>
+			<td colspan="2">
+			  <label for="DB Changes" class="titleBold">DB Changes</label>
+			  <div class="radio">
+			    <input type="radio" id="dbChanges1" name="deliver.dbChanges" checked="checked" value="N">N
+			    <input type="radio" id="dbChanges2" name="deliver.dbChanges" value="Y">Y
+			  </div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="5">
+			  <label for="Status" class="titleBold">Status</label>
+			  <input type="text" name="deliver.status" id="status" value="Deliver Done" class="text ui-widget-content ui-corner-all">
+			</td>
+			<td colspan="5">
+			  <label for="region" class="titleBold">Region(APAC/US/OTHER)</label>
+			  <input type="text" name="deliver.region" id="region" value="" class="text ui-widget-content ui-corner-all">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+			  <label for="UXF" class="titleBold">UXF</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="GCBUILDIQA" class="titleBold">GC BUILD IQA</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="GCUATIQA" class="titleBold">GC UAT IQA</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="SIT" class="titleBold">SIT</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="UAT" class="titleBold">UAT</label>
+			</td>
+		</tr>
+		<tr class="needBorder">
+			<td align="center">
+			  	<label for="UXF DP" class="titleBold">DP</label>
+			  	<select class="selectmenu" name="deliver.uxfdp">
+					<option selected="selected" value="Pending">Pending</option>
+					<option value="Done">Done</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="UXF VF" class="titleBold">VF</label>
+			  	<select class="selectmenu" name="deliver.uxfvf">
+					<option selected="selected" value="Pending">Pending</option>
+					<option value="Pass">Pass</option>
+					<option value="Fail">Fail</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="GC BUILD IQA DP" class="titleBold">DP</label>
+			  	<select class="selectmenu" name="deliver.gcBuildIqadp">
+					<option selected="selected" value="Pending">Pending</option>
+					<option value="Done">Done</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="GC BUILD IQA VF" class="titleBold">VF</label>
+			  	<select class="selectmenu" name="deliver.gcBuildIqavf">
+					<option selected="selected" value="Pending">Pending</option>
+					<option value="Pass">Pass</option>
+					<option value="Fail">Fail</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="GC UAT IQA DP" class="titleBold">DP</label>
+			  	<select class="selectmenu" name="deliver.gcUatIqadp">
+					<option selected="selected" value="Pending">Pending</option>
+					<option value="Done">Done</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="GC UAT IQA VF" class="titleBold">VF</label>
+			  	<select class="selectmenu" name="deliver.gcUatIqavf">
+					<option selected="selected" value="Pending">Pending</option>
+					<option value="Pass">Pass</option>
+					<option value="Fail">Fail</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="SIT DP" class="titleBold">DP</label>
+			  	<select class="selectmenu" name="deliver.sitdp">
+					<option selected="selected" value="Pending">Pending</option>
+					<option value="Done">Done</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="SIT VF" class="titleBold">VF</label>
+			  	<select class="selectmenu" name="deliver.sitvf">
+					<option selected="selected" value="Pending">Pending</option>
+					<option value="Pass">Pass</option>
+					<option value="Fail">Fail</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="UAT DP" class="titleBold">DP</label>
+			  	<select class="selectmenu" name="deliver.uatdp">
+					<option selected="selected" value="Pending">Pending</option>
+					<option value="Done">Done</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="UAT VF" class="titleBold">VF</label>
+			  	<select class="selectmenu" name="deliver.uatvf">
+					<option selected="selected" value="Pending">Pending</option>
+					<option value="Pass">Pass</option>
+					<option value="Fail">Fail</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+			  <label for="remark" class="titleBold">Remark</label>
+			  <input type="text" name="deliver.remark" id="remark" value="" class="text ui-widget-content ui-corner-all">
+			</td>
+		</tr>
+	</table>
+  </form>
+</div>
+
+<div id="dialog-form-deliver-upd" title="Update delivery" style="display: none;">
+  <form id="deliverUpd">
+  <input type="hidden" name="deliver.id" id="idUpd"/>
+	<table>
+		<tr>
+			<td colspan="5">
+			  <label for="Developer" class="titleBold">Developer</label>
+			  <input type="text" name="deliver.developer" id="developerUpd" value="" class="text ui-widget-content ui-corner-all">
+			</td>
+			<td colspan="5">
+			  <label for="Delivery Date" class="titleBold">Delivery Date</label>
+			  <input type="text" name="deliver.deliveryDate" id="deliveryDateUpd" class="text ui-widget-content ui-corner-all">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+			  <label for="Task Summary" class="titleBold">Task Summary</label>
+			  <input type="text" name="deliver.taskSummary" id="taskSummaryUpd" value="" class="text ui-widget-content ui-corner-all">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+			  <label for="Description" class="titleBold">Description(The reason of delivery)</label>
+			  <textarea name="deliver.description" id="descriptionUpd" class="text ui-widget-content ui-corner-all" style="width: 100%;height: 240px;"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			  <label for="App Changes" class="titleBold">App Changes</label>
+			  <div class="radio">
+			    <input type="radio" id="appChangesUpd1" name="deliver.appChanges" value="N">N
+			    <input type="radio" id="appChangesUpd2" name="deliver.appChanges" value="Y">Y
+			  </div>
+			</td>
+			<td colspan="3">
+			  <label for="Web Changes" class="titleBold">Web Changes</label>
+			  <div class="radio">
+			    <input type="radio" id="webChangesUpd1" name="deliver.webChanges" value="N">N
+			    <input type="radio" id="webChangesUpd2" name="deliver.webChanges" value="Y">Y
+			  </div>
+			</td>
+			<td colspan="3">
+			  <label for="Config Changes" class="titleBold">Config Changes</label>
+			  <div class="radio">
+			    <input type="radio" id="configChangesUpd1" name="deliver.configChanges" value="N">N
+			    <input type="radio" id="configChangesUpd2" name="deliver.configChanges" value="Y">Y
+			  </div>
+			</td>
+			<td colspan="2">
+			  <label for="DB Changes" class="titleBold">DB Changes</label>
+			  <div class="radio">
+			    <input type="radio" id="dbChangesUpd1" name="deliver.dbChanges" value="N">N
+			    <input type="radio" id="dbChangesUpd2" name="deliver.dbChanges" value="Y">Y
+			  </div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="5">
+			  <label for="Status" class="titleBold">Status</label>
+			  <input type="text" name="deliver.status" id="statusUpd" value="Deliver Done" class="text ui-widget-content ui-corner-all">
+			</td>
+			<td colspan="5">
+			  <label for="region" class="titleBold">Region(APAC/US/OTHER)</label>
+			  <input type="text" name="deliver.region" id="regionUpd" value="" class="text ui-widget-content ui-corner-all">
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+			  <label for="UXF" class="titleBold">UXF</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="GCBUILDIQA" class="titleBold">GC BUILD IQA</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="GCUATIQA" class="titleBold">GC UAT IQA</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="SIT" class="titleBold">SIT</label>
+			</td>
+			<td colspan="2" align="center">
+			  <label for="UAT" class="titleBold">UAT</label>
+			</td>
+		</tr>
+		<tr class="needBorder">
+			<td align="center">
+			  	<label for="UXF DP" class="titleBold">DP</label>
+			  	<select class="selectmenu" name="deliver.uxfdp" id="uxfdpUpd">
+					<option selected="selected" value="Done">Done</option>
+					<option value="Pending">Pending</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="UXF VF" class="titleBold">VF</label>
+			  	<select class="selectmenu" name="deliver.uxfvf" id="uxfvfUpd">
+					<option selected="selected" value="Pass">Pass</option>
+					<option value="Fail">Fail</option>
+					<option value="Pending">Pending</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="GC BUILD IQA DP" class="titleBold">DP</label>
+			  	<select class="selectmenu" name="deliver.gcBuildIqadp" id="gcBuildIqadpUpd">
+					<option selected="selected" value="Done">Done</option>
+					<option value="Pending">Pending</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="GC BUILD IQA VF" class="titleBold">VF</label>
+			  	<select class="selectmenu" name="deliver.gcBuildIqavf" id="gcBuildIqavfUpd">
+					<option selected="selected" value="Pass">Pass</option>
+					<option value="Fail">Fail</option>
+					<option value="Pending">Pending</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="GC UAT IQA DP" class="titleBold">DP</label>
+			  	<select class="selectmenu" name="deliver.gcUatIqadp" id="gcUatIqadpUpd">
+					<option selected="selected" value="Done">Done</option>
+					<option value="Pending">Pending</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="GC UAT IQA VF" class="titleBold">VF</label>
+			  	<select class="selectmenu" name="deliver.gcUatIqavf" id="gcUatIqavfUpd">
+					<option selected="selected" value="Pass">Pass</option>
+					<option value="Fail">Fail</option>
+					<option value="Pending">Pending</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="SIT DP" class="titleBold">DP</label>
+			  	<select class="selectmenu" name="deliver.sitdp" id="sitdpUpd">
+					<option selected="selected" value="Done">Done</option>
+					<option value="Pending">Pending</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="SIT VF" class="titleBold">VF</label>
+			  	<select class="selectmenu" name="deliver.sitvf" id="sitvfUpd">
+					<option selected="selected" value="Pass">Pass</option>
+					<option value="Fail">Fail</option>
+					<option value="Pending">Pending</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="UAT DP" class="titleBold">DP</label>
+			  	<select class="selectmenu" name="deliver.uatdp" id="uatdpUpd">
+					<option selected="selected" value="Done">Done</option>
+					<option value="Pending">Pending</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+			<td align="center">
+			  <label for="UAT VF" class="titleBold">VF</label>
+			  	<select class="selectmenu" name="deliver.uatvf" id="uatvfUpd">
+					<option selected="selected" value="Pass">Pass</option>
+					<option value="Fail">Fail</option>
+					<option value="Pending">Pending</option>
+					<option value="-">-</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10">
+			  <label for="remark" class="titleBold">Remark</label>
+			  <input type="text" name="deliver.remark" id="remarkUpd" value="" class="text ui-widget-content ui-corner-all">
+			</td>
+		</tr>
+	</table>
+  </form>
+</div>
+
+<div id="dialog-del-issue" title="Del issues" style="display: none;">
+	<span>Are you sure?</span>
+	<input type="hidden" id="delIssueId"/>
+</div>
+
+<div id="dialog-del-deliver" title="Del deliver" style="display: none;">
+	<span>Are you sure?</span>
+	<input type="hidden" id="delDeliverId"/>
+</div>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.knowledgeSharing.IDao.IssuesMapper" >
+  <resultMap id="BaseResultMap" type="com.knowledgeSharing.pojo.Issues" >
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="ISSUE_TYPE" property="issueType" jdbcType="VARCHAR" />
+    <result column="SUMMARY" property="summary" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION_LOGS" property="descriptionLogs" jdbcType="VARCHAR" />
+    <result column="SOLUTION" property="solution" jdbcType="VARCHAR" />
+    <result column="FIXED_BY" property="fixedBy" jdbcType="VARCHAR" />
+    <result column="INPUT_DATE" property="inputDate" jdbcType="VARCHAR" />
+    <result column="INPUT_NAME" property="inputName" jdbcType="VARCHAR" />
+    <result column="DELSIGN" property="delsign" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, ISSUE_TYPE, SUMMARY, DESCRIPTION_LOGS, SOLUTION, FIXED_BY, INPUT_DATE, INPUT_NAME, DELSIGN
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from KS_ISSUES_T where DELSIGN = 0 order by to_date(INPUT_DATE,'DD/MM/YY') desc
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from KS_ISSUES_T
+    where ID = #{id,jdbcType=VARCHAR} AND DELSIGN = 0
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from KS_ISSUES_T
+    where ID = #{id,jdbcType=VARCHAR} AND DELSIGN = 0
+  </delete>
+  <update id="updateDelByPrimaryKey" parameterType="java.lang.String" >
+    update KS_ISSUES_T
+    set DELSIGN = 1
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <insert id="insert" parameterType="com.knowledgeSharing.pojo.Issues" >
+    insert into KS_ISSUES_T (ID, ISSUE_TYPE, SUMMARY, 
+      DESCRIPTION_LOGS, SOLUTION, FIXED_BY, INPUT_DATE, INPUT_NAME, DELSIGN
+      )
+    values (#{id,jdbcType=VARCHAR}, #{issueType,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR}, 
+      #{descriptionLogs,jdbcType=VARCHAR}, #{solution,jdbcType=VARCHAR}, #{fixedBy,jdbcType=VARCHAR}, sysdate, #{inputName,jdbcType=VARCHAR}, 0
+      )
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.knowledgeSharing.pojo.Issues" >
+    update KS_ISSUES_T
+    <set >
+      <if test="issueType != null" >
+        ISSUE_TYPE = #{issueType,jdbcType=VARCHAR},
+      </if>
+      <if test="summary != null" >
+        SUMMARY = #{summary,jdbcType=VARCHAR},
+      </if>
+      <if test="descriptionLogs != null" >
+        DESCRIPTION_LOGS = #{descriptionLogs,jdbcType=VARCHAR},
+      </if>
+      <if test="solution != null" >
+        SOLUTION = #{solution,jdbcType=VARCHAR},
+      </if>
+      <if test="fixedBy != null" >
+        FIXED_BY = #{fixedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="inputDate != null" >
+        INPUT_DATE = #{inputDate,jdbcType=VARCHAR},
+      </if>
+      <if test="inputName != null" >
+        INPUT_NAME = #{inputName,jdbcType=VARCHAR},
+      </if>
+      <if test="delsign != null" >
+        DELSIGN = #{delsign,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.knowledgeSharing.pojo.Issues" >
+    update KS_ISSUES_T
+    set ISSUE_TYPE = #{issueType,jdbcType=VARCHAR},
+      SUMMARY = #{summary,jdbcType=VARCHAR},
+      DESCRIPTION_LOGS = #{descriptionLogs,jdbcType=VARCHAR},
+      SOLUTION = #{solution,jdbcType=VARCHAR},
+      FIXED_BY = #{fixedBy,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=VARCHAR} and DELSIGN = 0
+  </update>
+</mapper>

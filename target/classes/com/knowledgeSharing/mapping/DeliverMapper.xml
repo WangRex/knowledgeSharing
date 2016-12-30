@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.knowledgeSharing.IDao.DeliverMapper" >
+  <resultMap id="BaseResultMap" type="com.knowledgeSharing.pojo.Deliver" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="DEVELOPER" property="developer" jdbcType="VARCHAR" />
+    <result column="DELIVERY_DATE" property="deliveryDate" jdbcType="VARCHAR" />
+    <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+    <result column="APP_CHANGES" property="appChanges" jdbcType="VARCHAR" />
+    <result column="WEB_CHANGES" property="webChanges" jdbcType="VARCHAR" />
+    <result column="CONFIG_CHANGES" property="configChanges" jdbcType="VARCHAR" />
+    <result column="DB_CHANGES" property="dbChanges" jdbcType="VARCHAR" />
+    <result column="TASK_SUMMARY" property="taskSummary" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+    <result column="REGION" property="region" jdbcType="VARCHAR" />
+    <result column="UXFDP" property="uxfdp" jdbcType="VARCHAR" />
+    <result column="UXFVF" property="uxfvf" jdbcType="VARCHAR" />
+    <result column="GC_BUILD_IQADP" property="gcBuildIqadp" jdbcType="VARCHAR" />
+    <result column="GC_BUILD_IQAVF" property="gcBuildIqavf" jdbcType="VARCHAR" />
+    <result column="GC_UAT_IQADP" property="gcUatIqadp" jdbcType="VARCHAR" />
+    <result column="GC_UAT_IQAVF" property="gcUatIqavf" jdbcType="VARCHAR" />
+    <result column="SITDP" property="sitdp" jdbcType="VARCHAR" />
+    <result column="SITVF" property="sitvf" jdbcType="VARCHAR" />
+    <result column="UATDP" property="uatdp" jdbcType="VARCHAR" />
+    <result column="UATVF" property="uatvf" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="DELSIGN" property="delsign" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, DEVELOPER, DELIVERY_DATE, DESCRIPTION, APP_CHANGES, WEB_CHANGES, CONFIG_CHANGES, 
+    DB_CHANGES, TASK_SUMMARY, STATUS, REGION, UXFDP, UXFVF, GC_BUILD_IQADP, GC_BUILD_IQAVF, 
+    GC_UAT_IQADP, GC_UAT_IQAVF, SITDP, SITVF, UATDP, UATVF, REMARK, DELSIGN
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from KS_DELIVER_T where DELSIGN = 0 order by to_date(DELIVERY_DATE,'MM/DD/YYYY') desc
+  </select>
+  <select id="selectAllForExportToExcel" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  	${sql}
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from KS_DELIVER_T
+    where ID = #{id,jdbcType=DECIMAL} AND DELSIGN = 0
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from KS_DELIVER_T
+    where ID = #{id,jdbcType=DECIMAL} AND DELSIGN = 0
+  </delete>
+  <insert id="insert" parameterType="com.knowledgeSharing.pojo.Deliver" >
+    insert into KS_DELIVER_T (ID, DEVELOPER, DELIVERY_DATE, 
+      DESCRIPTION, APP_CHANGES, WEB_CHANGES, 
+      CONFIG_CHANGES, DB_CHANGES, TASK_SUMMARY, 
+      STATUS, REGION, UXFDP, 
+      UXFVF, GC_BUILD_IQADP, GC_BUILD_IQAVF, 
+      GC_UAT_IQADP, GC_UAT_IQAVF, SITDP, 
+      SITVF, UATDP, UATVF, 
+      REMARK, DELSIGN)
+    values (#{id,jdbcType=DECIMAL}, #{developer,jdbcType=VARCHAR}, #{deliveryDate,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{appChanges,jdbcType=VARCHAR}, #{webChanges,jdbcType=VARCHAR}, 
+      #{configChanges,jdbcType=VARCHAR}, #{dbChanges,jdbcType=VARCHAR}, #{taskSummary,jdbcType=VARCHAR}, 
+      #{status,jdbcType=VARCHAR}, #{region,jdbcType=VARCHAR}, #{uxfdp,jdbcType=VARCHAR}, 
+      #{uxfvf,jdbcType=VARCHAR}, #{gcBuildIqadp,jdbcType=VARCHAR}, #{gcBuildIqavf,jdbcType=VARCHAR}, 
+      #{gcUatIqadp,jdbcType=VARCHAR}, #{gcUatIqavf,jdbcType=VARCHAR}, #{sitdp,jdbcType=VARCHAR}, 
+      #{sitvf,jdbcType=VARCHAR}, #{uatdp,jdbcType=VARCHAR}, #{uatvf,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, 0)
+  </insert>
+  <insert id="insertSelective" parameterType="com.knowledgeSharing.pojo.Deliver" >
+    insert into KS_DELIVER_T
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="developer != null" >
+        DEVELOPER,
+      </if>
+      <if test="deliveryDate != null" >
+        DELIVERY_DATE,
+      </if>
+      <if test="description != null" >
+        DESCRIPTION,
+      </if>
+      <if test="appChanges != null" >
+        APP_CHANGES,
+      </if>
+      <if test="webChanges != null" >
+        WEB_CHANGES,
+      </if>
+      <if test="configChanges != null" >
+        CONFIG_CHANGES,
+      </if>
+      <if test="dbChanges != null" >
+        DB_CHANGES,
+      </if>
+      <if test="taskSummary != null" >
+        TASK_SUMMARY,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="region != null" >
+        REGION,
+      </if>
+      <if test="uxfdp != null" >
+        UXFDP,
+      </if>
+      <if test="uxfvf != null" >
+        UXFVF,
+      </if>
+      <if test="gcBuildIqadp != null" >
+        GC_BUILD_IQADP,
+      </if>
+      <if test="gcBuildIqavf != null" >
+        GC_BUILD_IQAVF,
+      </if>
+      <if test="gcUatIqadp != null" >
+        GC_UAT_IQADP,
+      </if>
+      <if test="gcUatIqavf != null" >
+        GC_UAT_IQAVF,
+      </if>
+      <if test="sitdp != null" >
+        SITDP,
+      </if>
+      <if test="sitvf != null" >
+        SITVF,
+      </if>
+      <if test="uatdp != null" >
+        UATDP,
+      </if>
+      <if test="uatvf != null" >
+        UATVF,
+      </if>
+      <if test="remark != null" >
+        REMARK,
+      </if>
+      <if test="delsign != null" >
+        DELSIGN,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="developer != null" >
+        #{developer,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null" >
+        #{deliveryDate,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="appChanges != null" >
+        #{appChanges,jdbcType=VARCHAR},
+      </if>
+      <if test="webChanges != null" >
+        #{webChanges,jdbcType=VARCHAR},
+      </if>
+      <if test="configChanges != null" >
+        #{configChanges,jdbcType=VARCHAR},
+      </if>
+      <if test="dbChanges != null" >
+        #{dbChanges,jdbcType=VARCHAR},
+      </if>
+      <if test="taskSummary != null" >
+        #{taskSummary,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="uxfdp != null" >
+        #{uxfdp,jdbcType=VARCHAR},
+      </if>
+      <if test="uxfvf != null" >
+        #{uxfvf,jdbcType=VARCHAR},
+      </if>
+      <if test="gcBuildIqadp != null" >
+        #{gcBuildIqadp,jdbcType=VARCHAR},
+      </if>
+      <if test="gcBuildIqavf != null" >
+        #{gcBuildIqavf,jdbcType=VARCHAR},
+      </if>
+      <if test="gcUatIqadp != null" >
+        #{gcUatIqadp,jdbcType=VARCHAR},
+      </if>
+      <if test="gcUatIqavf != null" >
+        #{gcUatIqavf,jdbcType=VARCHAR},
+      </if>
+      <if test="sitdp != null" >
+        #{sitdp,jdbcType=VARCHAR},
+      </if>
+      <if test="sitvf != null" >
+        #{sitvf,jdbcType=VARCHAR},
+      </if>
+      <if test="uatdp != null" >
+        #{uatdp,jdbcType=VARCHAR},
+      </if>
+      <if test="uatvf != null" >
+        #{uatvf,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delsign != null" >
+        DELSIGN = #{delsign,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.knowledgeSharing.pojo.Deliver" >
+    update KS_DELIVER_T
+    <set >
+      <if test="developer != null" >
+        DEVELOPER = #{developer,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null" >
+        DELIVERY_DATE = #{deliveryDate,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="appChanges != null" >
+        APP_CHANGES = #{appChanges,jdbcType=VARCHAR},
+      </if>
+      <if test="webChanges != null" >
+        WEB_CHANGES = #{webChanges,jdbcType=VARCHAR},
+      </if>
+      <if test="configChanges != null" >
+        CONFIG_CHANGES = #{configChanges,jdbcType=VARCHAR},
+      </if>
+      <if test="dbChanges != null" >
+        DB_CHANGES = #{dbChanges,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryType != null" >
+        TASK_SUMMARY = #{taskSummary,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="region != null" >
+        REGION = #{region,jdbcType=VARCHAR},
+      </if>
+      <if test="uxfdp != null" >
+        UXFDP = #{uxfdp,jdbcType=VARCHAR},
+      </if>
+      <if test="uxfvf != null" >
+        UXFVF = #{uxfvf,jdbcType=VARCHAR},
+      </if>
+      <if test="gcBuildIqadp != null" >
+        GC_BUILD_IQADP = #{gcBuildIqadp,jdbcType=VARCHAR},
+      </if>
+      <if test="gcBuildIqavf != null" >
+        GC_BUILD_IQAVF = #{gcBuildIqavf,jdbcType=VARCHAR},
+      </if>
+      <if test="gcUatIqadp != null" >
+        GC_UAT_IQADP = #{gcUatIqadp,jdbcType=VARCHAR},
+      </if>
+      <if test="gcUatIqavf != null" >
+        GC_UAT_IQAVF = #{gcUatIqavf,jdbcType=VARCHAR},
+      </if>
+      <if test="sitdp != null" >
+        SITDP = #{sitdp,jdbcType=VARCHAR},
+      </if>
+      <if test="sitvf != null" >
+        SITVF = #{sitvf,jdbcType=VARCHAR},
+      </if>
+      <if test="uatdp != null" >
+        UATDP = #{uatdp,jdbcType=VARCHAR},
+      </if>
+      <if test="uatvf != null" >
+        UATVF = #{uatvf,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        REMARK = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delsign != null" >
+        DELSIGN = #{delsign,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL} and DELSIGN = 0
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.knowledgeSharing.pojo.Deliver" >
+    update KS_DELIVER_T
+    set DEVELOPER = #{developer,jdbcType=VARCHAR},
+      DELIVERY_DATE = #{deliveryDate,jdbcType=VARCHAR},
+      DESCRIPTION = #{description,jdbcType=VARCHAR},
+      APP_CHANGES = #{appChanges,jdbcType=VARCHAR},
+      WEB_CHANGES = #{webChanges,jdbcType=VARCHAR},
+      CONFIG_CHANGES = #{configChanges,jdbcType=VARCHAR},
+      DB_CHANGES = #{dbChanges,jdbcType=VARCHAR},
+      TASK_SUMMARY = #{taskSummary,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=VARCHAR},
+      REGION = #{region,jdbcType=VARCHAR},
+      UXFDP = #{uxfdp,jdbcType=VARCHAR},
+      UXFVF = #{uxfvf,jdbcType=VARCHAR},
+      GC_BUILD_IQADP = #{gcBuildIqadp,jdbcType=VARCHAR},
+      GC_BUILD_IQAVF = #{gcBuildIqavf,jdbcType=VARCHAR},
+      GC_UAT_IQADP = #{gcUatIqadp,jdbcType=VARCHAR},
+      GC_UAT_IQAVF = #{gcUatIqavf,jdbcType=VARCHAR},
+      SITDP = #{sitdp,jdbcType=VARCHAR},
+      SITVF = #{sitvf,jdbcType=VARCHAR},
+      UATDP = #{uatdp,jdbcType=VARCHAR},
+      UATVF = #{uatvf,jdbcType=VARCHAR},
+      REMARK = #{remark,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL} and DELSIGN = 0
+  </update>
+</mapper>
